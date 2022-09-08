@@ -34,7 +34,7 @@ jobs:
       run: |
         SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$LICENSE_KEY" --message "$LICENSE_MESSAGE")
         export SENTIEON_AUTH_DATA
-        sentieon-genomics-202112.05/bin/sentieon bwa mem human_g1k_v37_decoy.small.fasta tiny_n_L001_R1_xxx.fastq.gz > aligned.sam
+        sentieon-genomics-202112.05/bin/sentieon bwa mem -R "@RG\tID:sample-1\tSM:sample" human_g1k_v37_decoy.small.fasta tiny_n_L001_R1_xxx.fastq.gz > aligned.sam
       env:
         SENTIEON_LICENSE: ${{ secrets.LICSRVR_IP }}
         SENTIEON_AUTH_MECH: "GitHub Actions - token"
