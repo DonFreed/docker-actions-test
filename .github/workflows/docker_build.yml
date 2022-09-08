@@ -38,7 +38,7 @@ jobs:
       env:
         SENTIEON_LICENSE: ${{ secrets.LICSRVR_IP }}
         SENTIEON_AUTH_MECH: "GitHub Actions - token"
-        LICENSE_KEY: ${{ secrets.LICENSE_KEY }}
+        ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
         LICENSE_MESSAGE: ${{ secrets.LICENSE_MESSAGE }}
 
     - name: Sort alignment
@@ -49,5 +49,5 @@ jobs:
       env:
         SENTIEON_LICENSE: ${{ secrets.LICSRVR_IP }}
         SENTIEON_AUTH_MECH: "GitHub Actions - token"
-        LICENSE_KEY: ${{ secrets.LICENSE_KEY }}
+        ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
         LICENSE_MESSAGE: ${{ secrets.LICENSE_MESSAGE }}
