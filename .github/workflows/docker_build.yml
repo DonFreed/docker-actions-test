@@ -32,7 +32,7 @@ jobs:
 
     - name: Run alignment
       run: |
-        SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$LICENSE_KEY" --message "$LICENSE_MESSAGE")
+        SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$ENCRYPTION_KEY" --message "$LICENSE_MESSAGE")
         export SENTIEON_AUTH_DATA
         sentieon-genomics-202112.05/bin/sentieon bwa mem -R "@RG\tID:sample-1\tSM:sample" human_g1k_v37_decoy.small.fasta tiny_n_L001_R1_xxx.fastq.gz > aligned.sam
       env:
@@ -43,7 +43,7 @@ jobs:
 
     - name: Sort alignment
       run: |
-        SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$LICENSE_KEY" --message "$LICENSE_MESSAGE")
+        SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$ENCRYPTION_KEY" --message "$LICENSE_MESSAGE")
         export SENTIEON_AUTH_DATA
         sentieon-genomics-202112.05/bin/sentieon util sort -i aligned.sam --sam2bam -o sorted.bam
       env:
