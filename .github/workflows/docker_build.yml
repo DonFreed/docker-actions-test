@@ -2,8 +2,6 @@ name: Docker build
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 env:
   "SENTIEON_VERSION": "202112.05"
@@ -13,5 +11,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --build-arg SENTIEON_VERSION=$SENTIEON_VERSION --file Dockerfile --tag my-image-name:$(date +%s)
+    
+    - name: Download deps
+      run: |
+        wget https://raw.githubusercontent.com/nf-core/test-datasets/sarek/testdata/tiny/normal/tiny_n_L001_R1_xxx.fastq.gz 
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta.amb 
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta.ann
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta.bwt
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta.fai
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta.pac
+        wget https://github.com/nf-core/test-datasets/raw/sarek/reference/human_g1k_v37_decoy.small.fasta.sa
+        curl -L https://s3.amazonaws.com/sentieon-release/software/sentieon-genomics-202112.05.tar.gz | tar -zxf -
+
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - run: pip install -r requirements.txt
+
+    - name: Run alignment
+      run: |
+        SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$LICENSE_KEY" --message "$LICENSE_MESSAGE")
+        export SENTIEON_AUTH_DATA
+        sentieon-genomics-202112.05/bin/sentieon bwa mem human_g1k_v37_decoy.small.fasta tiny_n_L001_R1_xxx.fastq.gz > aligned.sam
+      env:
+        SENTIEON_LICENSE: ${{ secrets.LICSRVR_IP }}
+        SENTIEON_AUTH_MECH: "GitHub Actions - token"
+        LICENSE_KEY: ${{ secrets.LICENSE_KEY }}
+        LICENSE_MESSAGE: ${{ secrets.LICENSE_MESSAGE }}
+
+    - name: Sort alignment
+      run: |
+        SENTIEON_AUTH_DATA=$(python3 .github/scripts/license_message.py encrypt --key "$LICENSE_KEY" --message "$LICENSE_MESSAGE")
+        export SENTIEON_AUTH_DATA
+        sentieon-genomics-202112.05/bin/sentieon util sort -i aligned.sam --sam2bam -o sorted.bam
+      env:
+        SENTIEON_LICENSE: ${{ secrets.LICSRVR_IP }}
+        SENTIEON_AUTH_MECH: "GitHub Actions - token"
+        LICENSE_KEY: ${{ secrets.LICENSE_KEY }}
+        LICENSE_MESSAGE: ${{ secrets.LICENSE_MESSAGE }}
