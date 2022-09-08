@@ -37,4 +37,4 @@ We are now ready to use the Sentieon software within GitHub Actions. An example 
 
 ### Future work
 
-This solution relies on secrets stored in GitHub Actions for identity verification. GitHub's [OpenID Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) implementation may potentially provide a method for identity verification without requiring the storage of long-lived secrets.
+This solution relies on secrets stored in GitHub Actions for identity verification. GitHub's [OpenID Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect) implementation may  provide a method for identity verification without requiring the storage of long-lived secrets.
